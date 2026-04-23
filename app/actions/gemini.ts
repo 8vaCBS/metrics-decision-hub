@@ -43,7 +43,7 @@ export async function generateStrategicDiagnosis(userData: string, cachedBenchma
 
     const genAI = new GoogleGenerativeAI(aiKey);
     const model = genAI.getGenerativeModel(
-      { model: 'gemini-2.5-flash' },
+     { model: 'gemini-2.5-flash-lite' },
       { apiVersion: 'v1beta' }
     );
 
