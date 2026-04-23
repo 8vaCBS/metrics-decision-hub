@@ -839,7 +839,7 @@ export default function MetricsDecisionHub() {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f1f5f9', fontSize: '12px' }} />
+                <Tooltip formatter={(value: any) => formatCurrency(value)} contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#f1f5f9', fontSize: '12px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
