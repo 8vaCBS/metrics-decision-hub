@@ -73,7 +73,7 @@ ${SYSTEM_INSTRUCTION}`;
 
     const result = await model.generateContent({
       contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-      tools: [{ googleSearch: {} } as any],
+      //tools: [{ googleSearch: {} } as any],
       generationConfig: {
         temperature: 0.2,
       }
