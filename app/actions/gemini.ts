@@ -57,10 +57,10 @@ export async function generateStrategicDiagnosis(userData: string, cachedBenchma
       ? `BENCHMARKS CONOCIDOS (Úsalos para ahorrar tokens y tiempo):\n${JSON.stringify(cachedBenchmarks)}`
       : "No hay benchmarks previos, DEBES buscar en Google.";
 
-    const fullPrompt = `METODOLOGÍA OBLIGATORIA:
-1. Revisa los BENCHMARKS CONOCIDOS. Si son suficientes, prioriza el análisis. Si no, usa tu herramienta de búsqueda (Google Search) para encontrar benchmarks reales de ${industry} para el periodo 2024-2026.
-2. Encuentra casos de éxito/falla reales que apliquen a estos datos.
-3. Aplica el modelo DIKW y el ciclo DMAIC con rigor académico.
+const fullPrompt = `ANÁLISIS ESTRATÉGICO RÁPIDO:
+1. Usa Google Search para encontrar SOLO los 2 benchmarks más críticos de ${industry} (2024-2026).
+2. No busques casos de estudio extensos, enfócate en la acción inmediata, que es el análisis como experto en Marketing Metrics.
+3. Genera el diagnóstico DIKW/DMAIC de forma sintética para responder en < 20 segundos, pero que sea significativo y contundente.
 
 CONTEXTO:
 ${benchmarksContext}
