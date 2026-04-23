@@ -4,3 +4,7 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@google/generative-ai"]
+  timeout = 26 # Aumentamos el límite a 26 segundos (máximo en plan gratuito)
