@@ -1,0 +1,107 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-blue-900: #0B1120;
+  --color-blue-800: #0F172A;
+  --color-blue-700: #1E293B;
+  --color-blue-600: #334155;
+  --color-blue-500: #475569;
+  --color-blue-400: #64748B;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+
+  --color-bg-app: var(--bg-app);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-card: var(--bg-card);
+  --color-border-main: var(--border-main);
+  --color-border-light: var(--border-light);
+  --color-text-main: var(--text-main);
+  --color-text-sec: var(--text-sec);
+  --color-bg-input: var(--bg-input);
+}
+
+:root {
+  --bg-app: #0B1120;
+  --bg-sidebar: #0F172A;
+  --bg-card: rgba(30, 41, 59, 0.5); /* slate-800/50 approx */
+  --border-main: #1E293B; /* slate-800 */
+  --border-light: rgba(51, 65, 85, 0.5); /* slate-700/50 */
+  --text-main: #ffffff;
+  --text-sec: #94A3B8; /* slate-400 */
+  --bg-input: #0F172A;
+  --shadow-card: none;
+}
+
+.light-theme {
+  --bg-app: #F5F5F7; /* Apple style light grey background */
+  --bg-sidebar: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --border-main: rgba(0,0,0,0.06); /* Very soft subtle border */
+  --border-light: rgba(0,0,0,0.03);
+  --text-main: #1D1D1F; /* Apple dark grey text */
+  --text-sec: #86868B;
+  --bg-input: #FFFFFF;
+  --shadow-card: 0 10px 40px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.02); /* Soft deep shadow */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  letter-spacing: -0.015em; /* Apple style kerning */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.glass-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 50px rgba(0,0,0,0.06), 0 5px 15px rgba(0,0,0,0.03);
+}
+
+/* Solo mantengo backdrop-filter en el modo dark para respetar el Apple style solido en blanco */
+:root .glass-panel {
+  backdrop-filter: blur(10px);
+}
+.light-theme .glass-panel {
+  backdrop-filter: none;
+}
+
+.status-glow {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.markdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-table th, .markdown-table td {
+  border: 1px solid var(--border-main);
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.markdown-table th {
+  background-color: var(--bg-sidebar);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
