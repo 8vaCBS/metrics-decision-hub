@@ -940,7 +940,8 @@ export default function MetricsDecisionHub() {
                   contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#ffffff', fontSize: '12px', borderRadius: '8px' }}
                   itemStyle={{ color: '#ffffff' }}
                 />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]} minBarSize={20} barSize={20}>
+                // @ts-ignore
+<Bar dataKey="value" radius={[0, 4, 4, 0]} minBarSize={20} barSize={20}>
                   {
                     dynamicFunnelData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
