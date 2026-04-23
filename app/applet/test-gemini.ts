@@ -1,5 +1,4 @@
-import { generateStrategicDiagnosis } from './actions/gemini.js';
-
+import { generateStrategicDiagnosis } from '../actions/gemini';
 async function run() {
   try {
     const res = await generateStrategicDiagnosis("Hola, nuestra conversion B2C es de 1.2%");
