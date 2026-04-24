@@ -216,23 +216,28 @@ export default function MetricsDecisionHub() {
   const attributionGap = Math.abs(reportedByPlatforms - baseRevenue);
   const gapPercentage = baseRevenue > 0 ? (attributionGap / baseRevenue) * 100 : 0;
 
-  // 3. CAC Detallado (Dynamic channels)
-  const allPlatforms = [
-    { name: 'Facebook', spend: formData.spendFacebook },
-    { name: 'Instagram', spend: formData.spendInstagram },
-    { name: 'LinkedIn', spend: formData.spendLinkedIn },
-    { name: 'TikTok', spend: formData.spendTikTok },
-    { name: 'Google Search', spend: formData.spendGoogleSearchAds },
-    { name: 'Google Ads', spend: formData.spendGoogleAds },
-    { name: 'YouTube', spend: formData.spendYoutube }
-  ];
+  // 3. CAC Detallado (Dynamic channels con ponderación para realismo)
+  const channelWeights: Record<string, number> = {
+    'LinkedIn': 1.8,    
+    'Facebook': 0.8,    
+    'Instagram': 0.9,
+    'TikTok': 0.7,
+    'Google Search': 1.2,
+    'Google Ads': 1.0,
+    'YouTube': 1.1
+  };
 
   const cacDetailed = allPlatforms
     .filter(p => p.spend > 0)
-    .map(p => ({
-      channel: p.name,
-      cac: bottomFunnelValue > 0 ? (p.spend / (bottomFunnelValue * (p.spend / (totalSpend || 1)) || 0.1)) : 0
-    }));
+    .map(p => {
+      const weight = channelWeights[p.name] || 1;
+      const globalCac = totalSpend > 0 && bottomFunnelValue > 0 ? (totalSpend / bottomFunnelValue) : 0;
+      return {
+        channel: p.name,
+        cac: globalCac * weight 
+      };
+    });
+
 
   // 4. KPI vs Logro (Progress Bar Target)
   const kpiTarget = formData.industry === 'SaaS' ? 1000 : (formData.industry === 'B2B' ? 500 : 2000); 
@@ -634,79 +639,26 @@ export default function MetricsDecisionHub() {
                  {parseFloat(dynamicCtr) < 1.8 ? '↓' : '↑'} {parseFloat(dynamicCtr) < 1 ? 'Crítico' : parseFloat(dynamicCtr) < 1.8 ? 'Bajo benchmark' : 'Saludable'}
                </span>
              </div>
-             <div className="text-3xl font-bold text-white mt-2">{dynamicCtr}%</div>
-             <div className="text-[10px] text-slate-500 mt-1 font-medium">Bench: 1.8% · HubSpot 2025</div>
-           </div>
-           
-           <div className={`glass-panel rounded-3xl p-6 border-l-4 ${parseFloat(conversionRate) < 1.2 ? 'border-red-500' : 'border-emerald-500'} shadow-xl transition-all hover:shadow-emerald-500/10 group`}>
+           <div className={`glass-panel rounded-3xl p-6 border-l-4 ${parseFloat(conversionRate) < 1.2 ? 'border-red-500' : 'border-emerald-500'} ${parseFloat(conversionRate) < 0.5 ? 'animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.3)] border-2 border-red-500' : ''} shadow-xl transition-all hover:shadow-emerald-500/10 group`}>
              <div className="flex justify-between items-start">
                <div className="flex items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CVR</span>
+                 <span className={`text-[10px] font-bold ${parseFloat(conversionRate) < 0.5 ? 'text-red-500' : 'text-slate-400'} uppercase tracking-widest`}>CVR</span>
                  <InfoTooltip 
                     label="Conversion Rate" 
                     nomenclature="Acciones / Sesiones" 
-                    description="Mide la eficiencia del sitio para convertir visitas en objetivos de negocio (ventas o leads)." 
+                    description="Mide la eficiencia del sitio para convertir visitas en objetivos de negocio." 
                     position="bottom"
                  />
                </div>
                <div className="flex items-center gap-2">
                  <span className={`text-[10px] font-bold ${parseFloat(conversionRate) < 1.2 ? 'text-red-500' : 'text-emerald-500'}`}>
-                   {parseFloat(conversionRate) < 1.2 ? '↓' : '↑'} {parseFloat(conversionRate) < 0.5 ? 'Crítico' : parseFloat(conversionRate) < 1.2 ? 'Bajo benchmark' : parseFloat(conversionRate) > 3 ? 'Excelente' : 'Sobre benchmark'}
+                   {parseFloat(conversionRate) < 1.2 ? '↓' : '↑'} {parseFloat(conversionRate) < 0.5 ? 'CRÍTICO / REVISAR WEB' : parseFloat(conversionRate) < 1.2 ? 'Bajo benchmark' : 'Sobre benchmark'}
                  </span>
                </div>
              </div>
-             <div className="text-3xl font-bold text-white mt-2">{conversionRate}%</div>
+             <div className={`text-3xl font-bold ${parseFloat(conversionRate) < 0.5 ? 'text-red-500' : 'text-white'} mt-2`}>{conversionRate}%</div>
              <div className="text-[10px] text-slate-500 mt-1 font-medium">Bench: 1.2% · Salesforce</div>
            </div>
-
-           <div className="glass-panel rounded-3xl p-6 border-l-4 border-emerald-500 shadow-xl transition-all hover:shadow-emerald-500/10 group">
-             <div className="flex justify-between items-start">
-               <div className="flex items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CPV</span>
-                 <InfoTooltip 
-                    label="Cost Per Visit" 
-                    nomenclature="Inversión / Sesiones" 
-                    description="Representa el costo de adquisición de cada sesión. Un CPV bajo indica pauta de alto rendimiento." 
-                 />
-               </div>
-               <span className="text-[10px] text-emerald-500 font-bold">↑ Eficiente</span>
-             </div>
-             <div className="text-3xl font-bold text-white mt-2">{formatCurrency(formData.sessionsTotal > 0 ? totalSpend / formData.sessionsTotal : 0)}</div>
-             <div className="text-[10px] text-slate-500 mt-1 font-medium">Bench: {formData.currency === 'CLP' ? '$2.500' : '$2.5'} · HubSpot 2025</div>
-           </div>
-
-           <div className="glass-panel rounded-3xl p-6 border-l-4 border-emerald-500 shadow-xl transition-all hover:shadow-emerald-500/10 group">
-             <div className="flex justify-between items-start">
-               <div className="flex items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ROI</span>
-                 <InfoTooltip 
-                    label="Return on Investment" 
-                    nomenclature="(Ingreso - Costo) / Costo" 
-                    description="Mide la rentabilidad total de tu inversión comercial, incluyendo costos de producto si aplica." 
-                 />
-               </div>
-               <span className="text-[10px] text-emerald-500 font-bold">↑ {parseFloat(dynamicRoiValue) > 50 ? 'Destacado' : 'Saludable'}</span>
-             </div>
-             <div className="text-3xl font-bold text-white mt-2">{dynamicRoiValue}%</div>
-             <div className="text-[10px] text-slate-500 mt-1 font-medium">Bench: 120% · Gartner</div>
-           </div>
-
-           <div className="glass-panel rounded-3xl p-6 border-l-4 border-emerald-500 shadow-xl transition-all hover:shadow-emerald-500/10 group">
-             <div className="flex justify-between items-start">
-               <div className="flex items-center">
-                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ROAS</span>
-                 <InfoTooltip 
-                    label="Return on Ad Spend" 
-                    nomenclature="Ingresos / Inversión en Pauta" 
-                    description="Mide el retorno directo por cada dólar/peso invertido exclusivamente en plataformas digitales." 
-                 />
-               </div>
-               <span className="text-[10px] text-emerald-500 font-bold">↑ {parseFloat(dynamicRoasValue) > 3 ? 'Eficiente' : 'Sobre benchmark'}</span>
-             </div>
-             <div className="text-3xl font-bold text-white mt-2">{dynamicRoasValue}x</div>
-             <div className="text-[10px] text-slate-500 mt-1 font-medium">Bench: 3x · LinkedIn B2B</div>
-           </div>
-        </div>
 
         {/* DIKW Level Bar */}
         <div className="glass-panel rounded-2xl p-4 mb-6 border-b border-blue-500/30">
